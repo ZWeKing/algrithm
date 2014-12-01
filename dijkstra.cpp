@@ -32,11 +32,10 @@ void DijkstraPath(MGraph g,int *dist,int *path,int v0)   //v0 是源点，根节
             path[i]=-1;		//定义前一个节点为-1
         }
         visited[i]=false;
-        if(c==0){
-            path[v0]=v0;
-            dist[v0]=0;
-            c=1;
-        }
+        if(c==v0){
+         path[v0]=v0;
+         dist[v0]=0;
+	    }
     }
     visited[v0]=true;
     for(i=1;i<g.n;i++)     //计算到其他n-1个节点的路径和权值
@@ -45,7 +44,7 @@ void DijkstraPath(MGraph g,int *dist,int *path,int v0)   //v0 是源点，根节
         int u;
         for(j=0;j<g.n;j++)    //寻找到某个节点的权值最小的节点，并将该节点标注为已知
         {
-            if(visited[j]==false&&dist[j]<min)
+            if(visited[j]==false&&dist[j]<=min)
             {
                 min=dist[j];
                 u=j;
@@ -72,6 +71,13 @@ void showPath(int *path,int v,int v0)   //打印源节点到各个其他节点�
     {
         s.push(v);
         v=path[v];
+	if(v==-1){
+	  while(!s.empty()){
+	    s.pop();
+	  }
+	cout<<u<<"  is unreachable!"<<endl;
+          return;
+	}
     }
     s.push(v);
     while(!s.empty())
@@ -79,6 +85,7 @@ void showPath(int *path,int v,int v0)   //打印源节点到各个其他节点�
         cout<<s.top()<<" ";
         s.pop();
     }
+    return;
 }
 
 int main(int argc, char *argv[])
@@ -110,10 +117,15 @@ int main(int argc, char *argv[])
         DijkstraPath(g,dist,path,v0);
         for(i=0;i<n;i++)
         {
+        
             if(i!=v0)
             {
                 showPath(path,i,v0);
+                if (dist[i]!=INT_MAX)
+                {
                 cout<<dist[i]<<endl;
+                }
+                
             }
         }
         free(dist);
